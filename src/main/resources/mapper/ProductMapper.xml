@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wl3321.common.mapper.ProductMapper">
+    <resultMap id="BaseResultMap" type="com.wl3321.pojo.entity.Product">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="coin" jdbcType="REAL" property="coin"/>
+        <result column="price" jdbcType="REAL" property="price"/>
+        <result column="stock" jdbcType="INTEGER" property="stock"/>
+        <result column="subTitle" jdbcType="VARCHAR" property="subTitle"/>
+        <result column="imageurl" jdbcType="VARCHAR" property="imageurl"/>
+        <result column="createdate" jdbcType="VARCHAR" property="createdate"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+                id,`name`,coin,price,stock,subTitle,imageurl,createdate
+        </sql>
+
+    <!--根据name查询商品-->
+    <select id="getByName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from product
+        where `name` = #{name}
+    </select>
+
+    <!--根据id查询商品-->
+    <select id="getById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from product
+        where `id` = #{id}
+    </select>
+
+
+    <!--查询商品列表-->
+    <select id="selectByCoinASC" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from product
+        order by coin asc
+    </select>
+
+    <!--插入商品-->
+    <insert id="add" parameterType="com.wl3321.pojo.entity.Product">
+        insert into product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null">
+                `name`,
+            </if>
+            <if test="coin != null">
+                coin,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="stock != null">
+                stock,
+            </if>
+            <if test="subTitle != null">
+                subTitle,
+            </if>
+            <if test="imageurl != null">
+                imageurl,
+            </if>
+            <if test="energy != null">
+                energy,
+            </if>
+            <if test="createdate != null">
+                createdate,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="coin != null">
+                #{coin,jdbcType=REAL},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=REAL},
+            </if>
+            <if test="stock != null">
+                #{stock,jdbcType=INTEGER},
+            </if>
+            <if test="subTitle != null">
+                #{subTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="imageurl != null">
+                #{imageurl,jdbcType=VARCHAR},
+            </if>
+            <if test="energy != null">
+                #{energy,jdbcType=REAL},
+            </if>
+            <if test="createdate != null">
+                #{createdate,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </insert>
+
+    <!--根据id删除商品-->
+    <delete id="deleteById">
+        delete
+        from product
+        where `id` = #{id}
+    </delete>
+
+    <!--根据id修改商品信息-->
+    <update id="updateById" parameterType="com.wl3321.pojo.entity.Product">
+        update product
+        <set>
+            <if test="name != null">
+                `name` = #{ name , jdbcType = VARCHAR },
+            </if>
+            <if test="coin != null">
+                coin = #{ coin , jdbcType = REAL },
+            </if>
+            <if test="price != null">
+                price = #{ price , jdbcType = REAL },
+            </if>
+            <if test="stock != null">
+                stock = #{ stock ,jdbcType = INTEGER },
+            </if>
+            <if test="subTitle != null">
+                subTitle = #{ subTitle , jdbcType = VARCHAR },
+            </if>
+            <if test="imageurl != null">
+                imageurl = #{ imageurl , jdbcType = VARCHAR },
+            </if>
+            <if test="energy != null">
+                energy =  #{ energy , jdbcType = REAL },
+            </if>
+            <if test="createdate != null">
+                createdate = #{ createdate , jdbcType = VARCHAR }
+            </if>
+        </set>
+        where id = #{ id }
+    </update>
+
+</mapper>
