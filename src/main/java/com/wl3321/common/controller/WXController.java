@@ -7,6 +7,7 @@ import com.wl3321.common.service.*;
 import com.wl3321.pojo.ApiResponse;
 import com.wl3321.pojo.entity.InviteRela;
 import com.wl3321.pojo.entity.User;
+import com.wl3321.pojo.entity.UserRankInfo;
 import com.wl3321.pojo.request.LoginReq;
 import com.wl3321.pojo.response.WXCodeSessionBean;
 import com.wl3321.utils.DateUtils;
@@ -56,7 +57,7 @@ public class WXController {
      *
      * @return
      */
-    @ResponseBody
+    @Transactional
     @PostMapping(value = "/wxlogin")
     public ApiResponse wxLogin(@Validated @RequestBody LoginReq req) {
         //换取 用户唯一标识 OpenID 和 会话密钥 session_key。
@@ -122,6 +123,13 @@ public class WXController {
                         stepsCoinService.add(inviteUser, "邀请" + (StringUtil.isEmpty(nickName) ? "用户"+user.getId() : nickName) + "奖励", 20);
                     }
                 }
+                //更新用户邀请总数
+                inviteUser.setInvite_total(inviteUser.getInvite_total()+1);
+                inviteUser.setCreatedate(DateUtils.stampToDate(System.currentTimeMillis()));
+                userService.update(inviteUser);
+                //更新用户排行榜数据
+                String inviteRankKey = InviteRelaService.inviteRankKey;
+                redisService.zIncrby(inviteRankKey,getRankValue(inviteUser),1);
             }
         } else {
             //老用户
@@ -131,20 +139,24 @@ public class WXController {
             if (code == 0) {
                 return ApiResponse.of(999, "操作失败请重试", null);
             }
-            //清除缓存
-            clearCach(user.getId(),user.getOpenid());
         }
 
         return ApiResponse.ofSuccess(user);
     }
 
     /**
-     * 清除缓存
+     * 获取zset元素key值
+     * @param user
+     * @return
      */
-    private void clearCach(int uid,String openid) {
-        ArrayList<String> keys = new ArrayList<>();
-        keys.add(userKey+":userid:"+uid);
-        keys.add(userKey+":openid:"+openid);
-        redisService.del(keys);
+    private UserRankInfo getRankValue(User user) {
+        UserRankInfo userRankInfo = new UserRankInfo();
+        userRankInfo.setId(user.getId());
+        userRankInfo.setName(user.getName());
+        userRankInfo.setHeadimgurl(user.getHeadimgurl());
+        userRankInfo.setOpenid(user.getOpenid());
+        return userRankInfo;
     }
+
+
 }

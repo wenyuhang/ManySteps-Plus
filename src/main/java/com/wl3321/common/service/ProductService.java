@@ -15,6 +15,8 @@ public interface ProductService {
 
     String productKey = "product";
 
+    void clearCach();
+
     int add(Product product);
 
     int delete(int id);

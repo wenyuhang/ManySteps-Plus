@@ -621,4 +621,70 @@ public class RedisService {
         }
     }
 
+    /**
+     * 返回某个元素的排名 从小到大
+     * @param key
+     * @param value
+     * @return
+     */
+    public Long zRank(String key,Object value){
+        try {
+            Long add = redisTemplate.opsForZSet().rank(key, value);
+            return add+1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1l;
+        }
+    }
+
+    /**
+     * 返回某个元素的排名 从大到小
+     * @param key
+     * @param value
+     * @return
+     */
+    public Long zReverseRank(String key,Object value){
+        try {
+            Long add = redisTemplate.opsForZSet().reverseRank(key, value);
+            return add+1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1l;
+        }
+    }
+
+    /**
+     * 返回某个元素的排名的分数
+     * @param key
+     * @param value
+     * @return
+     */
+    public Double zScore(String key,Object value){
+        try {
+            Double score = redisTemplate.opsForZSet().score(key, value);
+            return score;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1d;
+        }
+    }
+
+    /**
+     *
+     * 分数自增
+     * @param key
+     * @param value
+     * @param delta
+     * @return
+     */
+    public Double zIncrby(String key,Object value,double delta) {
+        try {
+            Double aDouble = redisTemplate.opsForZSet().incrementScore(key, value, delta);
+            return aDouble;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1d;
+        }
+    }
+
 }

@@ -16,6 +16,7 @@ import com.wl3321.utils.CoinUtils;
 import com.wl3321.utils.DateUtils;
 import com.wl3321.utils.WXUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,6 +56,7 @@ public class StepsRecordController {
      * @param req
      * @return
      */
+    @Transactional
     @PostMapping(value = "/getRunSteps")
     public ApiResponse getSteps(@Validated @RequestBody WXRunDataReq req) {
         //可兑换的步数
@@ -101,6 +103,12 @@ public class StepsRecordController {
                 }
             }
         }
+        //更新用户步数总数，插入数据库
+        if (stepsRecord.getSteps()<stepsToday){
+            user.setSteps_total(user.getSteps_total()+(stepsToday-stepsRecord.getSteps()));
+            user.setCreatedate(DateUtils.stampToDate(System.currentTimeMillis()));
+            userService.update(user);
+        }
 
         //检查是否超出限制  可转换步数超出2w步重置为上限2w
         if (canConvertSteps < stepsToday) {
@@ -129,11 +137,11 @@ public class StepsRecordController {
             System.out.println("微信步数数据插入失败");
         } else {
             //清除缓存
-            clearCach();
+            stepsRecordService.clearCach(user.getId());
             //加入redis缓存
             String key = StepsRecordService.stepsRecordKey + ":" + user.getId() + ":" + stepsRecord.getRundate();
             redisService.set(key, stepsRecordService.selectByUidAndRundate(user.getId(), stepsRecord.getRundate()));
-            //步数排行榜
+            //单日步数排行榜
             UserRankInfo userRankInfo = new UserRankInfo();
             userRankInfo.setId(user.getId());
             userRankInfo.setName(user.getName());
@@ -158,6 +166,7 @@ public class StepsRecordController {
      * @param req
      * @return
      */
+    @Transactional
     @PostMapping(value = "/convertSteps")
     public ApiResponse exchange(@Validated @RequestBody IDReq req) {
         //校验用户
@@ -186,6 +195,7 @@ public class StepsRecordController {
         int convertedsteps = stepsRecord.getConvertedsteps() + steps;
         stepsRecord.setConvertedsteps(convertedsteps);
         stepsRecord.setCreatedate(DateUtils.stampToDate(System.currentTimeMillis()));
+        //更新步数记录
         int code = stepsRecordService.updateByID(stepsRecord);
         if (code == 0) {
             System.out.println("微信步数数据更新失败");
@@ -195,7 +205,7 @@ public class StepsRecordController {
         int scode = stepsCoinService.add(user, "步数转金币", coin);
         if (scode != 0){
             //清除缓存
-            clearCach();
+            stepsRecordService.clearCach(uid);
         }
         return ApiResponse.ofSuccess(0);
     }
@@ -214,12 +224,4 @@ public class StepsRecordController {
         return ApiResponse.ofSuccess(pageInfo);
     }
 
-    /**
-     * 清除缓存
-     */
-    private void clearCach() {
-        //操作成功 清除缓存
-        Set<String> keys = redisService.keys(StepsRecordService.stepsRecordKey + "*");
-        redisService.del(keys);
-    }
 }

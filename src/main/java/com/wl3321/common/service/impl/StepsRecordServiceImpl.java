@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * author : WYH
@@ -24,6 +25,15 @@ public class StepsRecordServiceImpl implements StepsRecordService {
     StepsRecordMapper stepsRecordMapper;
     @Autowired
     RedisService redisService;
+
+    /**
+     * 清除缓存
+     */
+    @Override
+    public void clearCach(int uid) {
+        Set<String> keys = redisService.keys(StepsRecordService.stepsRecordKey +":"+uid+ "*");
+        redisService.del(keys);
+    }
 
     /**
      * 插入数据

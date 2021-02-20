@@ -2,9 +2,7 @@ package com.wl3321.common.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.wl3321.common.mapper.StepsCoinMapper;
-import com.wl3321.common.service.RedisService;
-import com.wl3321.common.service.StepsCoinService;
-import com.wl3321.common.service.UserService;
+import com.wl3321.common.service.*;
 import com.wl3321.pojo.entity.StepsCoin;
 import com.wl3321.pojo.entity.User;
 import com.wl3321.pojo.request.PageIDReq;
@@ -14,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Set;
 
 /**
  * author : WYH
@@ -54,6 +53,8 @@ public class StepsCoinServiceImpl implements StepsCoinService {
             user.setCoin_total(user.getCoin_total()+coin);
             user.setCreatedate(DateUtils.stampToDate(System.currentTimeMillis()));
             userService.update(user);
+            //清除缓存
+            clearCach(user.getId());
         }
         return code;
     }
@@ -76,5 +77,13 @@ public class StepsCoinServiceImpl implements StepsCoinService {
             redisService.set(key,list);
         }
         return list;
+    }
+
+    /**
+     * 清除缓存
+     */
+    private void clearCach(int uid) {
+        Set<String> keys = redisService.keys(stepsCoinKey +":"+uid+ "*");
+        redisService.del(keys);
     }
 }

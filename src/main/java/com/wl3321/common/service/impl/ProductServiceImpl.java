@@ -2,6 +2,7 @@ package com.wl3321.common.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.wl3321.common.mapper.ProductMapper;
+import com.wl3321.common.service.AddressService;
 import com.wl3321.common.service.ProductService;
 import com.wl3321.common.service.RedisService;
 import com.wl3321.pojo.entity.Product;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * author : WYH
@@ -25,6 +27,14 @@ public class ProductServiceImpl implements ProductService {
     RedisService redisService;
 
 
+    /**
+     * 清除缓存
+     */
+    @Override
+    public void clearCach() {
+        Set<String> keys = redisService.keys(ProductService.productKey + "*");
+        redisService.del(keys);
+    }
 
     @Override
     public int add(Product product) {
@@ -68,4 +78,5 @@ public class ProductServiceImpl implements ProductService {
         }
         return list;
     }
+
 }

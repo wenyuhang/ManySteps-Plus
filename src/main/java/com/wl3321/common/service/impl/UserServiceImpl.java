@@ -9,7 +9,9 @@ import com.wl3321.pojo.request.PageReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * author : WYH
@@ -94,6 +96,22 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public int update(User user) {
-        return userMapper.updateById(user);
+        int code = userMapper.updateById(user);
+        if (code != 0){
+            //清除缓存
+            clearCach(user.getId(),user.getOpenid());
+        }
+        return code;
+    }
+
+    /**
+     * 清除缓存
+     */
+    private void clearCach(int uid,String openid) {
+        Set<String> keyss = redisService.keys(userKey+":userid:"+uid+ "*");
+        redisService.del(keyss);
+        Set<String> keys = redisService.keys(userKey+":openid:"+openid+ "*");
+        redisService.del(keys);
+
     }
 }

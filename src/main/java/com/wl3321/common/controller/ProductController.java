@@ -11,6 +11,7 @@ import com.wl3321.utils.DateUtils;
 import com.wl3321.utils.ImageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -57,6 +58,7 @@ public class ProductController {
      * @param image
      * @return
      */
+    @Transactional
     @PostMapping("/addProduct")
     public ApiResponse addProduct(@NotBlank(message = "The name parameter cannot be empty") String name,
                                   @NotBlank(message = "The coin parameter cannot be empty")
@@ -96,8 +98,8 @@ public class ProductController {
             deleteImageFile(imagePath);
             return ApiResponse.of(999, "操作失败请重试", null);
         }
-        //更新缓存
-        checkCode(code);
+        //清除缓存
+        productService.clearCach();
         return ApiResponse.ofSuccess(null);
     }
 
@@ -106,6 +108,7 @@ public class ProductController {
      * 删除商品
      * @return
      */
+    @Transactional
     @PostMapping("deleteProduct")
     public ApiResponse deleteProduct(@NotBlank(message = "The id parameter cannot be empty") @Min(value = 0, message = "The id parameter cannot be less than 0") String id) {
         //查询是否存在该商品
@@ -119,8 +122,8 @@ public class ProductController {
         }
         //删除商品图片
         deleteImageFile(imgPath+product.getImageurl());
-        //更新缓存
-        checkCode(code);
+        //清除缓存
+        productService.clearCach();
         return ApiResponse.ofMessage("删除成功");
     }
 
@@ -134,6 +137,7 @@ public class ProductController {
      * @param image
      * @return
      */
+    @Transactional
     @PostMapping("/updateProduct")
     public ApiResponse updateProduct(@NotBlank(message = "The id parameter cannot be empty")
                                      @Min(value = 0, message = "The id parameter cannot be less than 0") String id,
@@ -174,8 +178,8 @@ public class ProductController {
         }
         //删除之前的图片
         deleteImageFile(oldPath);
-        //更新缓存
-        checkCode(code);
+        //清除缓存
+        productService.clearCach();
         return ApiResponse.ofSuccess(product);
     }
 
@@ -212,18 +216,6 @@ public class ProductController {
     }
 
 
-    /**
-     * 检查操作码 更新缓存
-     *
-     * @param code
-     */
-    private void checkCode(int code) {
-        //操作成功 清除缓存
-        if (code != 0) {
-            Set<String> keys = redisService.keys(productService.productKey + "*");
-            redisService.del(keys);
-        }
-    }
 
 
     /**

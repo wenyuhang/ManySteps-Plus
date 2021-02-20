@@ -14,6 +14,7 @@ import java.util.List;
  */
 public interface InviteRelaService {
     String inviteRelaKey = "inviteRela";
+    String inviteRankKey = "inviteRank";
 
     int add(InviteRela inviteRela);
 

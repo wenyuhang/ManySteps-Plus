@@ -16,6 +16,8 @@ public interface StepsRecordService {
     String stepsRecordKey = "stepsRecord";
     String stepsRankKey = "stepsRank";
 
+    void clearCach(int uid);
+
     int add(StepsRecord stepsRecord);
 
     int updateByID(StepsRecord stepsRecord);

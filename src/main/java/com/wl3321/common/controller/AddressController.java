@@ -10,6 +10,7 @@ import com.wl3321.pojo.request.AddressReq;
 import com.wl3321.pojo.request.IDReq;
 import com.wl3321.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +36,7 @@ public class AddressController {
      * @param req
      * @return
      */
+    @Transactional
     @RequestMapping(value = "/addAddress",method = RequestMethod.POST)
     public ApiResponse add(@Validated @RequestBody AddressReq req){
         //检查用户是否存在
@@ -61,14 +63,13 @@ public class AddressController {
      * @param req
      * @return
      */
+    @Transactional
     @RequestMapping(value = "/deleteAddress",method = RequestMethod.POST)
     public ApiResponse delete(@Validated @RequestBody IDReq req){
-        int code = addressService.deleteByID(Integer.parseInt(req.getId()));
+        int code = addressService.deleteByUid(Integer.parseInt(req.getId()));
         if (code==0){
             return ApiResponse.of(999,"操作失败请重试",null);
         }
-        //清除redis 缓存
-        clearCach(Integer.parseInt(req.getId()));
         return ApiResponse.ofSuccess(null);
     }
 
@@ -77,6 +78,7 @@ public class AddressController {
      * @param req
      * @return
      */
+    @Transactional
     @PostMapping(value = "/updateAddress")
     public ApiResponse update(@Validated @RequestBody AddressReq req){
         //检查该地址是否存在
@@ -89,18 +91,10 @@ public class AddressController {
         if (updata==0){
             return ApiResponse.of(999,"操作失败请重试",null);
         }
-        //清除redis 缓存
-        clearCach(req.getUid());
         return ApiResponse.ofSuccess(null);
     }
 
-    /**
-     * 清除缓存
-     */
-    private void clearCach(int uid) {
-        String key = AddressService.addressKey+":uid:"+uid;
-        redisService.del(key);
-    }
+
 
     /**
      * 获取收货地址

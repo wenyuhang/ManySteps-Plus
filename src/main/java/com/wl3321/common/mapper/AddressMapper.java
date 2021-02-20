@@ -18,7 +18,7 @@ public interface AddressMapper {
 
     int add(AddressReq address);
 
-    int deleteByID(int id);
+    int deleteByUid(int uid);
 
     int updataByUid(AddressReq address);
 

@@ -19,6 +19,17 @@ public class DateUtils {
     public static final long BASE_DAY = 1000*60*60*24;
 
     private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+
+    /**
+     * 获取运动日期
+     */
+    public static String getRunDate(Long lt){
+        String res;
+        Date date = new Date(lt);
+        res = format.format(date);
+        return res;
+    }
 
     /**
      * 将时间戳转换为时间

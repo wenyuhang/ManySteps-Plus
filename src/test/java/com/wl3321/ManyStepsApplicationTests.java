@@ -2,10 +2,7 @@ package com.wl3321;
 
 import com.wl3321.common.mapper.InviteRelaMapper;
 import com.wl3321.common.service.*;
-import com.wl3321.pojo.entity.Address;
-import com.wl3321.pojo.entity.InviteRela;
-import com.wl3321.pojo.entity.Product;
-import com.wl3321.pojo.entity.User;
+import com.wl3321.pojo.entity.*;
 import com.wl3321.pojo.response.InviteRelaResp;
 import com.wl3321.utils.DateUtils;
 import org.junit.jupiter.api.Test;
@@ -42,10 +39,15 @@ class ManyStepsApplicationTests {
 //        System.out.println(inviteRelaResps.size());
 //        System.out.println(userService.selectByUserId(224));
         User user = userService.selectByUserId(224);
-        user.setInvite_total(10);
-        //步数排行榜
-        String rankKey = StepsRecordService.stepsRankKey + ":20210220" ;
-        redisService.zSet(rankKey, user, 9999);
+        UserRankInfo userRankInfo = new UserRankInfo();
+        userRankInfo.setId(user.getId());
+        userRankInfo.setName(user.getName());
+        userRankInfo.setHeadimgurl(user.getHeadimgurl());
+        userRankInfo.setOpenid(user.getOpenid());
+//        String rankKey = StepsRecordService.stepsRankKey + ":20210220" ;
+//        System.out.println("===>"+redisService.zReverseRank(rankKey, userRankInfo));
+        String inviteRankKey = InviteRelaService.inviteRankKey;
+        System.out.println(redisService.zIncrby(inviteRankKey, userRankInfo, 1));
     }
 
 }

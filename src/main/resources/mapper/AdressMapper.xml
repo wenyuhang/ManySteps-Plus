@@ -29,10 +29,10 @@
     </select>
 
     <!--根据id删除收货地址-->
-    <delete id="deleteByID">
+    <delete id="deleteByUid">
         delete
         from address
-        where id = #{id}
+        where uid = #{uid}
     </delete>
 
     <!--插入数据-->

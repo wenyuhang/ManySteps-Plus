@@ -37,8 +37,13 @@ public class AddressServiceImpl implements AddressService {
      * @return
      */
     @Override
-    public int deleteByID(int uid) {
-        return addressMapper.deleteByID(uid);
+    public int deleteByUid(int uid) {
+        int code =  addressMapper.deleteByUid(uid);
+        if (code != 0){
+            //清除redis 缓存
+            clearCach(uid);
+        }
+        return code;
     }
 
     /**
@@ -48,7 +53,12 @@ public class AddressServiceImpl implements AddressService {
      */
     @Override
     public int updataByUid(AddressReq address) {
-        return addressMapper.updataByUid(address);
+        int code = addressMapper.updataByUid(address);
+        if (code != 0){
+            //清除redis 缓存
+            clearCach(address.getUid());
+        }
+        return code;
     }
 
     /**
@@ -68,5 +78,11 @@ public class AddressServiceImpl implements AddressService {
         return address;
     }
 
-
+    /**
+     * 清除缓存
+     */
+    private void clearCach(int uid) {
+        String key = AddressService.addressKey+":uid:"+uid;
+        redisService.del(key);
+    }
 }

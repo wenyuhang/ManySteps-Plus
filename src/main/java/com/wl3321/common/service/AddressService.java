@@ -14,7 +14,7 @@ public interface AddressService {
 
     int add(AddressReq address);
 
-    int deleteByID(int uid);
+    int deleteByUid(int uid);
 
     int updataByUid(AddressReq address);
 
