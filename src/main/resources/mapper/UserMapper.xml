@@ -4,5 +4,178 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.wl3321.common.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.wl3321.pojo.entity.User">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="headimgurl" jdbcType="VARCHAR" property="headimgurl"/>
+        <result column="openid" jdbcType="VARCHAR" property="openid"/>
+        <result column="unionid" jdbcType="VARCHAR" property="unionid"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="session_key" jdbcType="VARCHAR" property="session_key"/>
+        <result column="access_token" jdbcType="VARCHAR" property="access_token"/>
+        <result column="account_status" jdbcType="INTEGER" property="account_status"/>
+        <result column="steps_total" jdbcType="INTEGER" property="steps_total"/>
+        <result column="coin_total" jdbcType="REAL" property="coin_total"/>
+        <result column="invite_total" jdbcType="INTEGER" property="invite_total"/>
+        <result column="createdate" jdbcType="VARCHAR" property="createdate"/>
+    </resultMap>
 
+    <sql id="Base_Column_List">
+                id,`name`,headimgurl,openid,unionid,phone,account_status,steps_total,coin_total,invite_total,createdate
+    </sql>
+
+    <!--根据id查询用户-->
+    <select id="selectByUserId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `user`
+        where `id` = #{id}
+    </select>
+
+    <!--根据openid查询用户-->
+    <select id="selectByOpenid" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `user`
+        where `openid` = #{openid}
+    </select>
+
+    <!--查询用户列表-->
+    <select id="selectByDateDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `user`
+        order by createdate desc
+    </select>
+
+    <!--插入新用户-->
+    <insert id="add" parameterType="com.wl3321.pojo.entity.User">
+        insert into `user`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null">
+                `name`,
+            </if>
+            <if test="headimgurl != null">
+                headimgurl,
+            </if>
+            <if test="openid != null">
+                openid,
+            </if>
+            <if test="unionid != null">
+                unionid,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="session_key != null">
+                session_key,
+            </if>
+            <if test="access_token != null">
+                access_token,
+            </if>
+            <if test="account_status != null">
+                account_status,
+            </if>
+            <if test="steps_total != null">
+                steps_total,
+            </if>
+            <if test="coin_total != null">
+                coin_total,
+            </if>
+            <if test="invite_total != null">
+                invite_total,
+            </if>
+            <if test="createdate != null">
+                createdate,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="headimgurl != null">
+                #{headimgurl,jdbcType=VARCHAR},
+            </if>
+            <if test="openid != null">
+                #{openid,jdbcType=VARCHAR},
+            </if>
+            <if test="unionid != null">
+                #{unionid,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="session_key != null">
+                #{session_key,jdbcType=VARCHAR},
+            </if>
+            <if test="access_token != null">
+                #{access_token,jdbcType=VARCHAR},
+            </if>
+            <if test="account_status != null">
+                #{account_status,jdbcType=INTEGER},
+            </if>
+            <if test="steps_total != null">
+                #{steps_total,jdbcType=INTEGER},
+            </if>
+            <if test="coin_total != null">
+                #{coin_total,jdbcType=REAL},
+            </if>
+            <if test="invite_total != null">
+                #{invite_total,jdbcType=INTEGER},
+            </if>
+            <if test="createdate != null">
+                #{createdate,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </insert>
+
+    <!--根据id修改用户信息-->
+    <update id="updateById" parameterType="com.wl3321.pojo.entity.User">
+        update `user`
+        <set>
+            <if test="name != null">
+                `name` = #{ name , jdbcType = VARCHAR },
+            </if>
+            <if test="headimgurl != null">
+                headimgurl = #{ headimgurl , jdbcType = VARCHAR },
+            </if>
+            <if test="openid != null">
+                openid = #{ openid , jdbcType = VARCHAR },
+            </if>
+            <if test="unionid != null">
+                unionid = #{ unionid ,jdbcType = VARCHAR },
+            </if>
+            <if test="phone != null">
+                phone = #{ phone , jdbcType = VARCHAR },
+            </if>
+            <if test="session_key != null">
+                session_key = #{ session_key , jdbcType = VARCHAR },
+            </if>
+            <if test="access_token != null">
+                access_token =  #{ access_token , jdbcType = VARCHAR },
+            </if>
+            <if test="account_status != null">
+                account_status =  #{ account_status , jdbcType = INTEGER },
+            </if>
+            <if test="steps_total != null">
+                steps_total =  #{ steps_total , jdbcType = INTEGER },
+            </if>
+            <if test="coin_total != null">
+                coin_total =  #{ coin_total , jdbcType = REAL },
+            </if>
+            <if test="invite_total != null">
+                invite_total =  #{ invite_total , jdbcType = INTEGER },
+            </if>
+            <if test="createdate != null">
+                createdate = #{ createdate , jdbcType = VARCHAR }
+            </if>
+        </set>
+        where id = #{ id }
+    </update>
 </mapper>

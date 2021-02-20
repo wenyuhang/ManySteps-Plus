@@ -10,6 +10,15 @@ import lombok.Data;
  */
 @Data
 public class WXCodeSessionBean {
+
     private int errcode;
+
     private String errmsg;
+
+    private String unionid;
+
+    private String openid;
+
+    private String session_key;
+
 }

@@ -1,5 +1,10 @@
 package com.wl3321.common.service;
 
+import com.wl3321.pojo.entity.User;
+import com.wl3321.pojo.request.PageReq;
+
+import java.util.List;
+
 /**
  * author : WYH
  * e-mail : wenyuhang@qinjia001.com
@@ -7,4 +12,16 @@ package com.wl3321.common.service;
  * desc   :
  */
 public interface UserService {
+    String userKey = "user";
+
+    int add(User user);
+
+    User selectByUserId(int id);
+
+    User selectByOpenid(String openid);
+
+    List<User> selectByDateDesc(PageReq req);
+
+
+    int update(User user);
 }

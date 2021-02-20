@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wl3321.common.mapper.StepsRecordMapper">
+
+    <resultMap id="BaseResultMap" type="com.wl3321.pojo.entity.StepsRecord">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="uid" jdbcType="INTEGER" property="uid"/>
+        <result column="steps" jdbcType="INTEGER" property="steps"/>
+        <result column="rundate" jdbcType="VARCHAR" property="rundate"/>
+        <result column="convertedsteps" jdbcType="INTEGER" property="convertedsteps"/>
+        <result column="createdate" jdbcType="VARCHAR" property="createdate"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+                id,uid,steps,rundate,convertedsteps,createdate
+    </sql>
+
+    <!--查询用户指定日期的运动记录-->
+    <select id="selectByUidAndRundate" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from stepsrecord
+        where uid = #{ uid }
+        and rundate = #{ rundate }
+    </select>
+
+    <!--查询用户运动记录-->
+    <select id="selectByUidDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from stepsrecord
+        where uid = #{ uid }
+        order by createdate desc
+    </select>
+
+    <!--插入数据-->
+    <insert id="add" parameterType="com.wl3321.pojo.entity.StepsRecord">
+        insert into stepsrecord
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="uid != null">
+                uid,
+            </if>
+            <if test="steps != null">
+                steps,
+            </if>
+            <if test="rundate != null">
+                rundate,
+            </if>
+            <if test="convertedsteps != null">
+                convertedsteps,
+            </if>
+            <if test="createdate != null">
+                createdate,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="uid != null">
+                #{uid,jdbcType=INTEGER},
+            </if>
+            <if test="steps != null">
+                #{steps,jdbcType=INTEGER},
+            </if>
+            <if test="rundate != null">
+                #{rundate,jdbcType=VARCHAR},
+            </if>
+            <if test="convertedsteps != null">
+                #{convertedsteps,jdbcType=INTEGER},
+            </if>
+            <if test="createdate != null">
+                #{createdate,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </insert>
+
+    <!--根据id修改数据-->
+    <update id="updateByID" parameterType="com.wl3321.pojo.entity.StepsRecord">
+        update stepsrecord
+        <set>
+            <if test="steps != null">
+                steps = #{ steps , jdbcType = INTEGER },
+            </if>
+            <if test="rundate != null">
+                rundate = #{ rundate , jdbcType = VARCHAR },
+            </if>
+            <if test="convertedsteps != null">
+                convertedsteps = #{ convertedsteps , jdbcType = INTEGER },
+            </if>
+            <if test="createdate != null">
+                createdate = #{ createdate ,jdbcType = VARCHAR },
+            </if>
+        </set>
+        where id = #{ id }
+    </update>
+</mapper>

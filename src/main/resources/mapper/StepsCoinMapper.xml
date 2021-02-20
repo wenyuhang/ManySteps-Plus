@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wl3321.common.mapper.StepsCoinMapper">
+    <resultMap id="BaseResultMap" type="com.wl3321.pojo.entity.StepsCoin">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="uid" jdbcType="INTEGER" property="uid"/>
+        <result column="tran_desc" jdbcType="VARCHAR" property="tran_desc"/>
+        <result column="coin" jdbcType="REAL" property="coin"/>
+        <result column="rundate" jdbcType="VARCHAR" property="rundate"/>
+        <result column="createdate" jdbcType="VARCHAR" property="createdate"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+                id,uid,tran_desc,coin,rundate,createdate
+    </sql>
+
+    <!--查询用户交易记录-->
+    <select id="selectByUidDateDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from stepscoin
+        where uid = #{ uid }
+        order by createdate desc
+    </select>
+
+    <!--插入数据-->
+    <insert id="add" parameterType="com.wl3321.pojo.entity.StepsCoin">
+        insert into stepscoin
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="uid != null">
+                uid,
+            </if>
+            <if test="tran_desc != null">
+                tran_desc,
+            </if>
+            <if test="coin != null">
+                coin,
+            </if>
+            <if test="rundate != null">
+                rundate,
+            </if>
+            <if test="createdate != null">
+                createdate,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="uid != null">
+                #{uid,jdbcType=INTEGER},
+            </if>
+            <if test="tran_desc != null">
+                #{tran_desc,jdbcType=VARCHAR},
+            </if>
+            <if test="coin != null">
+                #{coin,jdbcType=REAL},
+            </if>
+            <if test="rundate != null">
+                #{rundate,jdbcType=VARCHAR},
+            </if>
+            <if test="createdate != null">
+                #{createdate,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </insert>
+</mapper>

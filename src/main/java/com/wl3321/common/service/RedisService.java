@@ -91,10 +91,11 @@ public class RedisService {
 
     /**
      * 删除缓存
+     *
      * @param keys
      * @return
      */
-    public long del(Collection keys){
+    public long del(Collection keys) {
         long count = 0;
         if (!keys.isEmpty()) {
             count = redisTemplate.delete(keys);
@@ -104,14 +105,15 @@ public class RedisService {
 
     /**
      * 获取key的集合
+     *
      * @param keys
      * @return
      */
-    public Set<String> keys(String keys){
+    public Set<String> keys(String keys) {
         Set<String> keySet = null;
         if (keys != null && keys.length() > 0) {
             keySet = redisTemplate.keys(keys);
-        }else {
+        } else {
             keySet = redisTemplate.keys("*");
         }
         return keySet;
@@ -597,6 +599,25 @@ public class RedisService {
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
+        }
+    }
+    //===============================zset=================================
+
+    /**
+     * 将zset数据都放入缓存中
+     *
+     * @param key
+     * @param value
+     * @param score
+     * @return
+     */
+    public boolean zSet(String key, Object value, double score) {
+        try {
+            Boolean add = redisTemplate.opsForZSet().add(key, value, score);
+            return add;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 

@@ -6,7 +6,7 @@ import com.wl3321.common.service.RedisService;
 import com.wl3321.pojo.ApiResponse;
 import com.wl3321.pojo.entity.Product;
 import com.wl3321.pojo.request.IDReq;
-import com.wl3321.pojo.request.PageBeanReq;
+import com.wl3321.pojo.request.PageReq;
 import com.wl3321.utils.DateUtils;
 import com.wl3321.utils.ImageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -186,7 +186,7 @@ public class ProductController {
      * @return
      */
     @PostMapping("/productList")
-    public ApiResponse selectByCoinASC(@Validated @RequestBody PageBeanReq req) {
+    public ApiResponse selectByCoinASC(@Validated @RequestBody PageReq req) {
         List<Product> list = productService.selectByCoinASC(req);
         PageInfo pageInfo = new PageInfo(list);
         return ApiResponse.ofSuccess(pageInfo);

@@ -1,7 +1,7 @@
 package com.wl3321.common.service;
 
 import com.wl3321.pojo.entity.Product;
-import com.wl3321.pojo.request.PageBeanReq;
+import com.wl3321.pojo.request.PageReq;
 
 import java.util.List;
 
@@ -25,5 +25,5 @@ public interface ProductService {
 
     Product getByName(String name);
 
-    List<Product> selectByCoinASC(PageBeanReq req);
+    List<Product> selectByCoinASC(PageReq req);
 }

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wl3321.common.mapper.AddressMapper">
+    <resultMap id="BaseResultMap" type="com.wl3321.pojo.entity.Address">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="uid" jdbcType="INTEGER" property="uid"/>
+        <result column="receiver" jdbcType="VARCHAR" property="receiver"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="mobile" jdbcType="VARCHAR" property="mobile"/>
+        <result column="province" jdbcType="VARCHAR" property="province"/>
+        <result column="city" jdbcType="VARCHAR" property="city"/>
+        <result column="area" jdbcType="VARCHAR" property="area"/>
+        <result column="createdate" jdbcType="VARCHAR" property="createdate"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+                id,uid,receiver,address,mobile,province,city,area,createdate
+    </sql>
+
+    <!--根据uid查询用户收货地址-->
+    <select id="selectByUid" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from address
+        where uid = #{uid}
+    </select>
+
+    <!--根据id删除收货地址-->
+    <delete id="deleteByID">
+        delete
+        from address
+        where id = #{id}
+    </delete>
+
+    <!--插入数据-->
+    <insert id="add" parameterType="com.wl3321.pojo.request.AddressReq">
+        insert into address
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="uid != null">
+                uid,
+            </if>
+            <if test="receiver != null">
+                receiver,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            <if test="mobile != null">
+                mobile,
+            </if>
+            <if test="province != null">
+                province,
+            </if>
+            <if test="city != null">
+                city,
+            </if>
+            <if test="area != null">
+                area,
+            </if>
+            <if test="createdate != null">
+                createdate,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="uid != null">
+                #{uid,jdbcType=INTEGER},
+            </if>
+            <if test="receiver != null">
+                #{receiver,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="mobile != null">
+                #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="area != null">
+                #{area,jdbcType=VARCHAR},
+            </if>
+            <if test="createdate != null">
+                #{createdate,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </insert>
+
+    <!--根据id修改数据-->
+    <update id="updataByUid" parameterType="com.wl3321.pojo.request.AddressReq">
+        update address
+        <set>
+            <if test="uid != null">
+                uid = #{ uid , jdbcType = INTEGER },
+            </if>
+            <if test="receiver != null">
+                receiver = #{ receiver , jdbcType = VARCHAR },
+            </if>
+            <if test="address != null">
+                address = #{ address , jdbcType = VARCHAR },
+            </if>
+            <if test="mobile != null">
+                mobile = #{ mobile ,jdbcType = VARCHAR },
+            </if>
+            <if test="province != null">
+                province = #{ province , jdbcType = VARCHAR },
+            </if>
+            <if test="city != null">
+                city = #{ city , jdbcType = VARCHAR },
+            </if>
+            <if test="area != null">
+                area =  #{ area , jdbcType = VARCHAR },
+            </if>
+            <if test="createdate != null">
+                createdate = #{ createdate , jdbcType = VARCHAR }
+            </if>
+        </set>
+        where uid = #{ uid }
+    </update>
+
+</mapper>

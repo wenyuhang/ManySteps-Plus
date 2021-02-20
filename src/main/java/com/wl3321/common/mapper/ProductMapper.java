@@ -10,7 +10,7 @@ import java.util.List;
  * author : WYH
  * e-mail : wenyuhang@qinjia001.com
  * date   : 2021/1/18 18:04
- * desc   :
+ * desc   : 商品
  */
 @Mapper
 @Repository
