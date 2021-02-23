@@ -4,5 +4,120 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.wl3321.common.mapper.OrderMapper">
+    <resultMap id="BaseResultMap" type="com.wl3321.pojo.response.OrderResp">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="uid" jdbcType="INTEGER" property="uid"/>
+        <result column="pid" jdbcType="INTEGER" property="pid"/>
+        <result column="adid" jdbcType="INTEGER" property="adid"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="ordercode" jdbcType="VARCHAR" property="ordercode"/>
+        <result column="couriernumber" jdbcType="VARCHAR" property="couriernumber"/>
+        <result column="createdate" jdbcType="VARCHAR" property="createdate"/>
+        <association property="user" column="uid" javaType="com.wl3321.pojo.entity.User" select="com.wl3321.common.mapper.UserMapper.selectByUserId"/>
+        <association property="product" column="pid" javaType="com.wl3321.pojo.entity.Product" select="com.wl3321.common.mapper.ProductMapper.selectById"/>
+    </resultMap>
 
+    <sql id="Base_Column_List">
+                id,uid,pid,adid,status,ordercode,couriernumber,createdate
+    </sql>
+
+    <!--查询根据用户id查询订单-->
+    <select id="selectByUidAndDateDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from order_
+        where uid = #{ uid }
+        order by createdate desc
+    </select>
+
+    <!--查询根据商品id查询订单-->
+    <select id="selectByPidAndDateDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from order_
+        where pid = #{ pid }
+        order by createdate desc
+    </select>
+
+    <!--查询全部订单-->
+    <select id="selectByDateDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from order_
+        order by createdate desc
+    </select>
+
+    <!--插入商品-->
+    <insert id="add" parameterType="com.wl3321.pojo.entity.Order">
+        insert into order_
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="uid != null">
+                uid,
+            </if>
+            <if test="pid != null">
+                pid,
+            </if>
+            <if test="adid != null">
+                adid,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="ordercode != null">
+                ordercode,
+            </if>
+            <if test="couriernumber != null">
+                couriernumber,
+            </if>
+            <if test="createdate != null">
+                createdate,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="uid != null">
+                #{uid,jdbcType=INTEGER},
+            </if>
+            <if test="pid != null">
+                #{pid,jdbcType=INTEGER},
+            </if>
+            <if test="adid != null">
+                #{adid,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="ordercode != null">
+                #{ordercode,jdbcType=VARCHAR},
+            </if>
+            <if test="couriernumber != null">
+                #{couriernumber,jdbcType=VARCHAR},
+            </if>
+            <if test="createdate != null">
+                #{createdate,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </insert>
+
+    <!--根据id修改商品信息-->
+    <update id="updateByOrdercode" parameterType="com.wl3321.pojo.entity.Order">
+        update order_
+        <set>
+            <if test="status != null">
+                status = #{ status , jdbcType = INTEGER },
+            </if>
+            <if test="couriernumber != null">
+                couriernumber = #{ couriernumber , jdbcType = VARCHAR },
+            </if>
+            <if test="createdate != null">
+                createdate = #{ createdate , jdbcType = VARCHAR }
+            </if>
+        </set>
+        where ordercode = #{ ordercode }
+    </update>
 </mapper>

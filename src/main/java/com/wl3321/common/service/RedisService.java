@@ -2,13 +2,11 @@ package com.wl3321.common.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -623,14 +621,15 @@ public class RedisService {
 
     /**
      * 返回某个元素的排名 从小到大
+     *
      * @param key
      * @param value
      * @return
      */
-    public Long zRank(String key,Object value){
+    public Long zRank(String key, Object value) {
         try {
             Long add = redisTemplate.opsForZSet().rank(key, value);
-            return add+1;
+            return add + 1;
         } catch (Exception e) {
             e.printStackTrace();
             return -1l;
@@ -639,14 +638,15 @@ public class RedisService {
 
     /**
      * 返回某个元素的排名 从大到小
+     *
      * @param key
      * @param value
      * @return
      */
-    public Long zReverseRank(String key,Object value){
+    public Long zReverseRank(String key, Object value) {
         try {
             Long add = redisTemplate.opsForZSet().reverseRank(key, value);
-            return add+1;
+            return add + 1;
         } catch (Exception e) {
             e.printStackTrace();
             return -1l;
@@ -655,11 +655,12 @@ public class RedisService {
 
     /**
      * 返回某个元素的排名的分数
+     *
      * @param key
      * @param value
      * @return
      */
-    public Double zScore(String key,Object value){
+    public Double zScore(String key, Object value) {
         try {
             Double score = redisTemplate.opsForZSet().score(key, value);
             return score;
@@ -670,20 +671,40 @@ public class RedisService {
     }
 
     /**
-     *
      * 分数自增
+     *
      * @param key
      * @param value
      * @param delta
      * @return
      */
-    public Double zIncrby(String key,Object value,double delta) {
+    public Double zIncrby(String key, Object value, double delta) {
         try {
             Double aDouble = redisTemplate.opsForZSet().incrementScore(key, value, delta);
             return aDouble;
         } catch (Exception e) {
             e.printStackTrace();
             return -1d;
+        }
+    }
+
+    /**
+     * 倒序查询 从大到小
+     * @param key
+     * @param offset
+     * @param count
+     * @return
+     */
+    public Set<ZSetOperations.TypedTuple<Object>> zReverseRangeByScoreWithScores(String key, long offset, long count) {
+        Set<ZSetOperations.TypedTuple<Object>> typedTuples = new HashSet<>();
+        try {
+            offset -= 1;
+            offset = offset*count;
+            typedTuples = redisTemplate.opsForZSet().reverseRangeByScoreWithScores(key, 1f / -0f, 1f / 0f, offset, count);
+            return typedTuples;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return typedTuples;
         }
     }
 

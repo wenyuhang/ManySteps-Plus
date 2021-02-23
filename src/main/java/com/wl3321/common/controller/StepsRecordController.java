@@ -1,6 +1,7 @@
 package com.wl3321.common.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.util.StringUtil;
 import com.wl3321.common.service.*;
@@ -11,7 +12,9 @@ import com.wl3321.pojo.entity.User;
 import com.wl3321.pojo.entity.UserRankInfo;
 import com.wl3321.pojo.request.IDReq;
 import com.wl3321.pojo.request.PageIDReq;
+import com.wl3321.pojo.request.PageReq;
 import com.wl3321.pojo.request.WXRunDataReq;
+import com.wl3321.pojo.response.StepsMonitorResp;
 import com.wl3321.utils.CoinUtils;
 import com.wl3321.utils.DateUtils;
 import com.wl3321.utils.WXUtils;
@@ -149,6 +152,8 @@ public class StepsRecordController {
             userRankInfo.setOpenid(user.getOpenid());
             String rankKey = StepsRecordService.stepsRankKey + ":" + stepsRecord.getRundate();
             redisService.zSet(rankKey, userRankInfo, stepsToday);
+            //总步数排行榜
+            redisService.zSet(StepsRecordService.stepsTotalRankKey,userRankInfo,user.getSteps_total());
         }
 
         //注册用户超过1000奖励减半
@@ -208,6 +213,18 @@ public class StepsRecordController {
             stepsRecordService.clearCach(uid);
         }
         return ApiResponse.ofSuccess(0);
+    }
+
+    /**
+     * 获取监控警告
+     * @param req
+     * @return
+     */
+    @PostMapping(value = "/getMonitorsData")
+    public ApiResponse getMonitorsData(@Validated @RequestBody PageReq req){
+        List<StepsMonitorResp> list = stepsRecordService.selectStepsMonitor(req);
+        PageInfo pageInfo = new PageInfo(list);
+        return ApiResponse.ofSuccess(pageInfo);
     }
 
 

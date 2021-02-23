@@ -6,6 +6,8 @@ import com.wl3321.common.service.RedisService;
 import com.wl3321.common.service.StepsRecordService;
 import com.wl3321.pojo.entity.StepsRecord;
 import com.wl3321.pojo.request.PageIDReq;
+import com.wl3321.pojo.request.PageReq;
+import com.wl3321.pojo.response.StepsMonitorResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -88,6 +90,23 @@ public class StepsRecordServiceImpl implements StepsRecordService {
             list = stepsRecordMapper.selectByUidDesc(uid);
             PageHelper.clearPage();
             redisService.set(key,list);
+        }
+        return list;
+    }
+
+    /**
+     * 查询刷步监控记录 ######此查询为耗时查询######
+     * @return
+     */
+    @Override
+    public List<StepsMonitorResp> selectStepsMonitor(PageReq req) {
+        String key = stepsMonitorKey + ":"+req.getPage()+":"+req.getSize();
+        List<StepsMonitorResp> list = (List<StepsMonitorResp>) redisService.get(key);
+        if (null == list){
+            PageHelper.startPage(req.getPage(),req.getSize());
+            list = stepsRecordMapper.selectStepsMonitor();
+            PageHelper.clearPage();
+            redisService.set(key,list,1000*3600*6);
         }
         return list;
     }

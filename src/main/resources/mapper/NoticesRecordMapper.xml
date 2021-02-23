@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wl3321.common.mapper.NoticesRecordMapper">
+    <resultMap id="BaseResultMap" type="com.wl3321.pojo.entity.NoticesRecord">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="uid" jdbcType="INTEGER" property="uid"/>
+        <result column="p_status" jdbcType="BIT" property="p_status"/>
+        <result column="p_desc" jdbcType="VARCHAR" property="p_desc"/>
+        <result column="steps" jdbcType="INTEGER" property="steps"/>
+        <result column="coin" jdbcType="REAL" property="coin"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="create_time"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="update_time"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+                id,uid,p_status,p_desc,steps,coin,create_time,update_time
+    </sql>
+
+    <!--查询全部公告-->
+    <select id="selectByDateDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from m_notice_record
+        order by create_time desc
+    </select>
+</mapper>

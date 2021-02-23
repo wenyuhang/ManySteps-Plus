@@ -2,6 +2,8 @@ package com.wl3321.common.service;
 
 import com.wl3321.pojo.entity.StepsRecord;
 import com.wl3321.pojo.request.PageIDReq;
+import com.wl3321.pojo.request.PageReq;
+import com.wl3321.pojo.response.StepsMonitorResp;
 
 import java.util.List;
 
@@ -15,6 +17,8 @@ public interface StepsRecordService {
 
     String stepsRecordKey = "stepsRecord";
     String stepsRankKey = "stepsRank";
+    String stepsTotalRankKey = "stepsTotalRank";
+    String stepsMonitorKey = "stepsMonitor";
 
     void clearCach(int uid);
 
@@ -25,4 +29,6 @@ public interface StepsRecordService {
     StepsRecord selectByUidAndRundate(int uid,String rundate);
 
     List<StepsRecord> selectByUidDesc(PageIDReq req);
+
+    List<StepsMonitorResp> selectStepsMonitor(PageReq req);
 }

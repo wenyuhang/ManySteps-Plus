@@ -14,6 +14,16 @@
         <result column="createdate" jdbcType="VARCHAR" property="createdate"/>
     </resultMap>
 
+    <resultMap id="StepsMonitorMap" type="com.wl3321.pojo.response.StepsMonitorResp">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="uid" jdbcType="INTEGER" property="uid"/>
+        <result column="steps" jdbcType="INTEGER" property="steps"/>
+        <result column="rundate" jdbcType="VARCHAR" property="rundate"/>
+        <result column="convertedsteps" jdbcType="INTEGER" property="convertedsteps"/>
+        <result column="createdate" jdbcType="VARCHAR" property="createdate"/>
+        <result column="COUNT" jdbcType="INTEGER" property="COUNT"/>
+    </resultMap>
+
     <sql id="Base_Column_List">
                 id,uid,steps,rundate,convertedsteps,createdate
     </sql>
@@ -34,6 +44,16 @@
         from stepsrecord
         where uid = #{ uid }
         order by createdate desc
+    </select>
+
+    <!--查询刷步监控-->
+    <select id="selectStepsMonitor" resultMap="StepsMonitorMap">
+        select
+        <include refid="Base_Column_List"/>
+        ,COUNT(*) AS COUNT
+        from stepsrecord
+        where steps>1000
+        group by steps,uid HAVING COUNT>1;
     </select>
 
     <!--插入数据-->

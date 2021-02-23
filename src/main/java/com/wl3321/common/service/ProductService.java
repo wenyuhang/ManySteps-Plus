@@ -23,9 +23,9 @@ public interface ProductService {
 
     int update(Product product);
 
-    Product getById(int id);
+    Product selectById(int id);
 
-    Product getByName(String name);
+    Product selectByName(String name);
 
     List<Product> selectByCoinASC(PageReq req);
 }

@@ -22,9 +22,9 @@ public interface ProductMapper {
 
     int updateById(Product product);
 
-    Product getById(int id);
+    Product selectById(int id);
 
-    Product getByName(String name);
+    Product selectByName(String name);
 
     List<Product> selectByCoinASC();
 

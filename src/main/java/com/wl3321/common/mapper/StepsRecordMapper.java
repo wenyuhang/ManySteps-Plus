@@ -1,6 +1,7 @@
 package com.wl3321.common.mapper;
 
 import com.wl3321.pojo.entity.StepsRecord;
+import com.wl3321.pojo.response.StepsMonitorResp;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -23,4 +24,6 @@ public interface StepsRecordMapper {
     StepsRecord selectByUidAndRundate(int uid, String rundate);
 
     List<StepsRecord> selectByUidDesc(int uid);
+
+    List<StepsMonitorResp> selectStepsMonitor();
 }

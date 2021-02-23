@@ -9,7 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -38,16 +40,31 @@ class ManyStepsApplicationTests {
 //        List<InviteRelaResp> inviteRelaResps = inviteRelaMapper.selectByInviteID(1);
 //        System.out.println(inviteRelaResps.size());
 //        System.out.println(userService.selectByUserId(224));
-        User user = userService.selectByUserId(224);
-        UserRankInfo userRankInfo = new UserRankInfo();
-        userRankInfo.setId(user.getId());
-        userRankInfo.setName(user.getName());
-        userRankInfo.setHeadimgurl(user.getHeadimgurl());
-        userRankInfo.setOpenid(user.getOpenid());
-//        String rankKey = StepsRecordService.stepsRankKey + ":20210220" ;
+//        User user = userService.selectByUserId(224);
+//        UserRankInfo userRankInfo = new UserRankInfo();
+//        userRankInfo.setId(user.getId());
+//        userRankInfo.setName(user.getName());
+//        userRankInfo.setHeadimgurl(user.getHeadimgurl());
+//        userRankInfo.setOpenid(user.getOpenid());
+        String rankKey = StepsRecordService.stepsRankKey + ":20210222" ;
 //        System.out.println("===>"+redisService.zReverseRank(rankKey, userRankInfo));
-        String inviteRankKey = InviteRelaService.inviteRankKey;
-        System.out.println(redisService.zIncrby(inviteRankKey, userRankInfo, 1));
+//        String inviteRankKey = InviteRelaService.inviteRankKey;
+//        System.out.println(redisService.zIncrby(inviteRankKey, userRankInfo, 1));
+        Set<ZSetOperations.TypedTuple<Object>> typedTuples = redisService.zReverseRangeByScoreWithScores(rankKey, 0, 10);
+        System.out.println(typedTuples);
+
+
+        Iterator<ZSetOperations.TypedTuple<Object>> iterator = typedTuples.iterator();
+        while(iterator.hasNext()){
+            ZSetOperations.TypedTuple<Object> next = iterator.next();
+            System.out.println("value:"+next.getValue()+" score:"+next.getScore());
+		/*
+			value:d score:-1.0
+			value:a score:1.0
+			value:c score:2.0
+			value:b score:3.0
+		 */
+        }
     }
 
 }

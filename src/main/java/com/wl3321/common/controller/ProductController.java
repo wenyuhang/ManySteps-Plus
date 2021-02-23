@@ -69,7 +69,7 @@ public class ProductController {
                                   @Min(value = 0, message = "The stock parameter cannot be less than 0") String stock,
                                   MultipartFile image) {
         //查询是否存在相同名称商品
-        Product product = productService.getByName(name);
+        Product product = productService.selectByName(name);
         if (null != product) {
             return ApiResponse.of(999, "该商品已存在", null);
         }
@@ -112,7 +112,7 @@ public class ProductController {
     @PostMapping("deleteProduct")
     public ApiResponse deleteProduct(@NotBlank(message = "The id parameter cannot be empty") @Min(value = 0, message = "The id parameter cannot be less than 0") String id) {
         //查询是否存在该商品
-        Product product = productService.getById(Integer.parseInt(id));
+        Product product = productService.selectById(Integer.parseInt(id));
         if (null == product) {
             return ApiResponse.of(999, "该商品不存在", null);
         }
@@ -150,7 +150,7 @@ public class ProductController {
                                      @Min(value = 0, message = "The stock parameter cannot be less than 0") String stock,
                                      MultipartFile image){
         //查询是否存在该商品
-        Product product = productService.getById(Integer.parseInt(id));
+        Product product = productService.selectById(Integer.parseInt(id));
         if (null == product) {
             return ApiResponse.of(999, "该商品不存在，请修改后重试", null);
         }
@@ -207,7 +207,7 @@ public class ProductController {
         String key = productService.productKey+":id:"+req.getId();
         Product product = (Product) redisService.get(key);
         if (null == product) {
-            product = productService.getById(Integer.parseInt(req.getId()));
+            product = productService.selectById(Integer.parseInt(req.getId()));
            if (null == product){
                return ApiResponse.of(999, "该商品不存在，请修改后重试", null);
            }

@@ -56,13 +56,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product getById(int id) {
-        return productMapper.getById(id);
+    public Product selectById(int id) {
+        return productMapper.selectById(id);
     }
 
     @Override
-    public Product getByName(String name) {
-        return productMapper.getByName(name);
+    public Product selectByName(String name) {
+        return productMapper.selectByName(name);
     }
 
     @Override
