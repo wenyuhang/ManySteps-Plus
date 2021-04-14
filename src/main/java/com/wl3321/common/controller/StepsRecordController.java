@@ -222,8 +222,7 @@ public class StepsRecordController {
      */
     @PostMapping(value = "/getMonitorsData")
     public ApiResponse getMonitorsData(@Validated @RequestBody PageReq req){
-        List<StepsMonitorResp> list = stepsRecordService.selectStepsMonitor(req);
-        PageInfo pageInfo = new PageInfo(list);
+        PageInfo pageInfo = stepsRecordService.selectStepsMonitor(req);
         return ApiResponse.ofSuccess(pageInfo);
     }
 
@@ -236,8 +235,7 @@ public class StepsRecordController {
      */
     @RequestMapping(value = "/stepsRecord", method = RequestMethod.POST)
     public ApiResponse list(@Validated @RequestBody PageIDReq req) {
-        List<StepsRecord> list = stepsRecordService.selectByUidDesc(req);
-        PageInfo pageInfo = new PageInfo(list);
+        PageInfo pageInfo = stepsRecordService.selectByUidDesc(req);
         return ApiResponse.ofSuccess(pageInfo);
     }
 

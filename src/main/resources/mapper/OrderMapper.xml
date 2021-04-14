@@ -17,6 +17,17 @@
         <association property="product" column="pid" javaType="com.wl3321.pojo.entity.Product" select="com.wl3321.common.mapper.ProductMapper.selectById"/>
     </resultMap>
 
+    <resultMap id="OrderResultMap" type="com.wl3321.pojo.entity.Order">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="uid" jdbcType="INTEGER" property="uid"/>
+        <result column="pid" jdbcType="INTEGER" property="pid"/>
+        <result column="adid" jdbcType="INTEGER" property="adid"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="ordercode" jdbcType="VARCHAR" property="ordercode"/>
+        <result column="couriernumber" jdbcType="VARCHAR" property="couriernumber"/>
+        <result column="createdate" jdbcType="VARCHAR" property="createdate"/>
+    </resultMap>
+
     <sql id="Base_Column_List">
                 id,uid,pid,adid,status,ordercode,couriernumber,createdate
     </sql>
@@ -28,6 +39,14 @@
         from order_
         where uid = #{ uid }
         order by createdate desc
+    </select>
+
+    <!--查询根据订单号查询订单-->
+    <select id="selectByOrdercode" resultMap="OrderResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from order_
+        where ordercode = #{ ordercode }
     </select>
 
     <!--查询根据商品id查询订单-->
@@ -47,7 +66,7 @@
         order by createdate desc
     </select>
 
-    <!--插入商品-->
+    <!--插入订单信息-->
     <insert id="add" parameterType="com.wl3321.pojo.entity.Order">
         insert into order_
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -104,7 +123,7 @@
         </trim>
     </insert>
 
-    <!--根据id修改商品信息-->
+    <!--根据id修改订单信息-->
     <update id="updateByOrdercode" parameterType="com.wl3321.pojo.entity.Order">
         update order_
         <set>

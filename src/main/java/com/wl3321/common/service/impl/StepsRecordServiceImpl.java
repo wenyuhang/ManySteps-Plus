@@ -1,6 +1,7 @@
 package com.wl3321.common.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.wl3321.common.mapper.StepsRecordMapper;
 import com.wl3321.common.service.RedisService;
 import com.wl3321.common.service.StepsRecordService;
@@ -33,12 +34,13 @@ public class StepsRecordServiceImpl implements StepsRecordService {
      */
     @Override
     public void clearCach(int uid) {
-        Set<String> keys = redisService.keys(StepsRecordService.stepsRecordKey +":"+uid+ "*");
+        Set<String> keys = redisService.keys(StepsRecordService.stepsRecordKey + ":" + uid + "*");
         redisService.del(keys);
     }
 
     /**
      * 插入数据
+     *
      * @param stepsRecord
      * @return
      */
@@ -49,6 +51,7 @@ public class StepsRecordServiceImpl implements StepsRecordService {
 
     /**
      * 更新数据
+     *
      * @param stepsRecord
      * @return
      */
@@ -59,55 +62,58 @@ public class StepsRecordServiceImpl implements StepsRecordService {
 
     /**
      * 根据用户id和运动日期查询
+     *
      * @param uid
      * @param rundate
      * @return
      */
     @Override
     public StepsRecord selectByUidAndRundate(int uid, String rundate) {
-        String key = stepsRecordKey + ":"+uid+":"+rundate;
+        String key = stepsRecordKey + ":" + uid + ":" + rundate;
         StepsRecord stepsRecord = (StepsRecord) redisService.get(key);
-        if (null == stepsRecord){
-            stepsRecord = stepsRecordMapper.selectByUidAndRundate(uid,rundate);
-            redisService.set(key,stepsRecord,1000*3600*24);
+        if (null == stepsRecord) {
+            stepsRecord = stepsRecordMapper.selectByUidAndRundate(uid, rundate);
+            redisService.set(key, stepsRecord, 1000 * 3600 * 24);
         }
         return stepsRecord;
     }
 
     /**
      * 根据用户id查询步数记录
+     *
      * @param req
      * @return
      */
     @Override
-    public List<StepsRecord> selectByUidDesc(PageIDReq req) {
+    public PageInfo selectByUidDesc(PageIDReq req) {
         //redis-key
         int uid = Integer.parseInt(req.getId());
-        String key = stepsRecordKey+":"+uid+":"+req.getPage()+":"+req.getSize();
-        List<StepsRecord> list = (List<StepsRecord>) redisService.get(key);
-        if (null == list){
-            PageHelper.startPage(req.getPage(),req.getSize());
-            list = stepsRecordMapper.selectByUidDesc(uid);
-            PageHelper.clearPage();
-            redisService.set(key,list);
+        String key = stepsRecordKey + ":" + uid + ":" + req.getPage() + ":" + req.getSize();
+        PageInfo pageInfo = (PageInfo) redisService.get(key);
+        if (null == pageInfo) {
+            PageHelper.startPage(req.getPage(), req.getSize());
+            List<StepsRecord> list = stepsRecordMapper.selectByUidDesc(uid);
+            pageInfo = new PageInfo(list);
+            redisService.set(key, pageInfo);
         }
-        return list;
+        return pageInfo;
     }
 
     /**
      * 查询刷步监控记录 ######此查询为耗时查询######
+     *
      * @return
      */
     @Override
-    public List<StepsMonitorResp> selectStepsMonitor(PageReq req) {
-        String key = stepsMonitorKey + ":"+req.getPage()+":"+req.getSize();
-        List<StepsMonitorResp> list = (List<StepsMonitorResp>) redisService.get(key);
-        if (null == list){
-            PageHelper.startPage(req.getPage(),req.getSize());
-            list = stepsRecordMapper.selectStepsMonitor();
-            PageHelper.clearPage();
-            redisService.set(key,list,1000*3600*6);
+    public PageInfo selectStepsMonitor(PageReq req) {
+        String key = stepsMonitorKey + ":" + req.getPage() + ":" + req.getSize();
+        PageInfo pageInfo = (PageInfo) redisService.get(key);
+        if (null == pageInfo) {
+            PageHelper.startPage(req.getPage(), req.getSize());
+            List<StepsMonitorResp> list = stepsRecordMapper.selectStepsMonitor();
+            pageInfo = new PageInfo(list);
+//            redisService.set(key,pageInfo,1000*3600*6);
         }
-        return list;
+        return pageInfo;
     }
 }

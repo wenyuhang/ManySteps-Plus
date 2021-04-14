@@ -90,18 +90,18 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public List<OrderResp> selectByUidAndDateDesc(PageIDReq req) {
+    public PageInfo selectByUidAndDateDesc(PageIDReq req) {
         //redis-key
         int uid = Integer.parseInt(req.getId());
         String key = OrderService.orderUidKey + uid + ":" + req.getPage() + ":" + req.getSize();
-        List<OrderResp> list = (List<OrderResp>) redisService.get(key);
-        if (list == null) {
+        PageInfo pageInfo = (PageInfo) redisService.get(key);
+        if (null == pageInfo) {
             PageHelper.startPage(req.getPage(), req.getSize());
-            list = orderMapper.selectByUidAndDateDesc(uid);
-            PageHelper.clearPage();
-            redisService.set(key, list);
+            List<OrderResp> list = orderMapper.selectByUidAndDateDesc(uid);
+            pageInfo = new PageInfo(list);
+            redisService.set(key, pageInfo);
         }
-        return list;
+        return pageInfo;
     }
 
     /**
@@ -111,23 +111,23 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public List<OrderResp> selectByPidAndDateDesc(PageIDReq req) {
+    public PageInfo selectByPidAndDateDesc(PageIDReq req) {
         //redis-key
         int pid = Integer.parseInt(req.getId());
         String key = OrderService.orderPidKey + pid + ":" + req.getPage() + ":" + req.getSize();
-        List<OrderResp> list = (List<OrderResp>) redisService.get(key);
-        if (list == null) {
+        PageInfo pageInfo = (PageInfo) redisService.get(key);
+        if (null == pageInfo) {
             PageHelper.startPage(req.getPage(), req.getSize());
-            list = orderMapper.selectByPidAndDateDesc(pid);
-            PageHelper.clearPage();
+            List<OrderResp> list = orderMapper.selectByPidAndDateDesc(pid);
             //APP端请求 转换距今日期
             for (OrderResp order : list) {
                 String str = DateUtils.calcDistanceTime(order.getCreatedate());
                 order.setDistancedate(str);
             }
-            redisService.set(key, list);
+            pageInfo = new PageInfo(list);
+            redisService.set(key, pageInfo);
         }
-        return list;
+        return pageInfo;
     }
 
     /**
@@ -137,17 +137,17 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public List<OrderResp> selectByDateDesc(PageReq req) {
+    public PageInfo selectByDateDesc(PageReq req) {
         //redis-key
         String key = OrderService.orderAllKey + req.getPage() + ":" + req.getSize();
-        List<OrderResp> list = (List<OrderResp>) redisService.get(key);
-        if (list == null) {
+        PageInfo pageInfo = (PageInfo) redisService.get(key);
+        if (null == pageInfo) {
             PageHelper.startPage(req.getPage(), req.getSize());
-            list = orderMapper.selectByDateDesc();
-            PageHelper.clearPage();
-            redisService.set(key, list);
+            List<OrderResp> list = orderMapper.selectByDateDesc();
+            pageInfo = new PageInfo(list);
+            redisService.set(key, pageInfo);
         }
-        return list;
+        return pageInfo;
     }
 
 }

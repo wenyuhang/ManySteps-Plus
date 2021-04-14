@@ -95,7 +95,7 @@ public class ProductController {
         //插入商品信息
         int code = productService.add(product);
         if (code == 0) {
-            deleteImageFile(imagePath);
+            deleteImageFile(imgPath + imagePath.replace("img/product",""));
             return ApiResponse.of(999, "操作失败请重试", null);
         }
         //清除缓存
@@ -121,7 +121,7 @@ public class ProductController {
             return ApiResponse.of(999,"操作失败请重试",null);
         }
         //删除商品图片
-        deleteImageFile(imgPath+product.getImageurl());
+        deleteImageFile(imgPath+product.getImageurl().replace("img/product",""));
         //清除缓存
         productService.clearCach();
         return ApiResponse.ofMessage("删除成功");
@@ -161,7 +161,7 @@ public class ProductController {
             if (null == imagePath || imagePath.length() <= 0) {
                 return ApiResponse.of(999, "图片文件处理失败，请重试", null);
             }
-            oldPath = imgPath + product.getImageurl();
+            oldPath = imgPath + product.getImageurl().replace("img/product","");
             product.setImageurl(imagePath);
         }
         product.setName(name);
@@ -173,7 +173,7 @@ public class ProductController {
         int code = productService.update(product);
         if (code==0){
             //操作失败删除新添加的图片
-            deleteImageFile(imgPath + product.getImageurl());
+            deleteImageFile(imgPath + product.getImageurl().replace("img/product",""));
             return ApiResponse.of(999,"操作失败请重试",null);
         }
         //删除之前的图片
@@ -191,8 +191,7 @@ public class ProductController {
      */
     @PostMapping("/productList")
     public ApiResponse selectByCoinASC(@Validated @RequestBody PageReq req) {
-        List<Product> list = productService.selectByCoinASC(req);
-        PageInfo pageInfo = new PageInfo(list);
+        PageInfo pageInfo = productService.selectByCoinASC(req);
         return ApiResponse.ofSuccess(pageInfo);
     }
 
@@ -235,7 +234,7 @@ public class ProductController {
             image.transferTo(file);
             BufferedImage img = ImageUtil.change2jpg(file);
             ImageIO.write(img, "jpg", file);
-            filePath = file.getName();
+            filePath = "img/product/" + file.getName();
         } catch (IOException e) {
             filePath = null;
         }

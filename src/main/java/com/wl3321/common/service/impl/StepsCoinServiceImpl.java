@@ -1,6 +1,7 @@
 package com.wl3321.common.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.wl3321.common.mapper.StepsCoinMapper;
 import com.wl3321.common.service.*;
 import com.wl3321.pojo.entity.StepsCoin;
@@ -65,18 +66,18 @@ public class StepsCoinServiceImpl implements StepsCoinService {
      * @return
      */
     @Override
-    public List<StepsCoin> selectByUidDateDesc(PageIDReq req) {
+    public PageInfo selectByUidDateDesc(PageIDReq req) {
         //redis-key
         int uid = Integer.parseInt(req.getId());
         String key = stepsCoinKey + ":" + uid + ":" + req.getPage() + ":" + req.getSize();
-        List<StepsCoin> list = (List<StepsCoin>) redisService.get(key);
-        if (list == null){
+        PageInfo pageInfo = (PageInfo) redisService.get(key);
+        if (null == pageInfo){
             PageHelper.startPage(req.getPage(),req.getSize());
-            list = stepsCoinMapper.selectByUidDateDesc(uid);
-            PageHelper.clearPage();
-            redisService.set(key,list);
+            List<StepsCoin> list = stepsCoinMapper.selectByUidDateDesc(uid);
+            pageInfo = new PageInfo(list);
+            redisService.set(key,pageInfo);
         }
-        return list;
+        return pageInfo;
     }
 
     /**

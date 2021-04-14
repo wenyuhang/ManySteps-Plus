@@ -192,8 +192,7 @@ public class OrderController {
      */
     @PostMapping(value = "/myOrder")
     public ApiResponse listByUser(@Validated @RequestBody PageIDReq req) {
-        List<OrderResp> list = orderService.selectByUidAndDateDesc(req);
-        PageInfo pageInfo = new PageInfo(list);
+        PageInfo pageInfo = orderService.selectByUidAndDateDesc(req);
         return ApiResponse.ofSuccess(pageInfo);
     }
 
@@ -205,8 +204,7 @@ public class OrderController {
      */
     @PostMapping(value = "/orderListByProduct")
     public ApiResponse selectByPidAndDateDesc(@Validated @RequestBody PageIDReq req) {
-        List<OrderResp> list = orderService.selectByPidAndDateDesc(req);
-        PageInfo pageInfo = new PageInfo(list);
+        PageInfo pageInfo = orderService.selectByPidAndDateDesc(req);
         return ApiResponse.ofSuccess(pageInfo);
     }
 
@@ -218,8 +216,7 @@ public class OrderController {
      */
     @PostMapping(value = "/orderList")
     public ApiResponse list(@Validated @RequestBody PageReq req) {
-        List<OrderResp> list = orderService.selectByDateDesc(req);
-        PageInfo pageInfo = new PageInfo(list);
+        PageInfo pageInfo = orderService.selectByDateDesc(req);
         return ApiResponse.ofSuccess(pageInfo);
     }
 }

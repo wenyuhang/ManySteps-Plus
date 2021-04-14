@@ -1,10 +1,9 @@
 server:
-  port: 80
+  port: 8088
 
 
 
 pro:
   img:
-    path: D:/Java/nginx2/html/pro_img/product/
-
+    path: D:/Java/nginx2/html/steps/img/product
 

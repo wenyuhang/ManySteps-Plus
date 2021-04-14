@@ -26,4 +26,6 @@ public interface UserMapper {
 
     List<User> selectByDateDesc();
 
+    List<User> selectAll();
+
 }

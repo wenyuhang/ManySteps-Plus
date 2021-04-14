@@ -19,6 +19,14 @@
                 id,uid,p_status,p_desc,steps,coin,create_time,update_time
     </sql>
 
+    <!--查询公告-->
+    <select id="selectByUidAndDate" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from m_notice_record
+        where uid = #{ uid } and create_time = #{ create_time }
+    </select>
+
     <!--查询全部公告-->
     <select id="selectByDateDesc" resultMap="BaseResultMap">
         select
@@ -26,4 +34,62 @@
         from m_notice_record
         order by create_time desc
     </select>
+
+
+    <!--插入公告-->
+    <insert id="add" parameterType="com.wl3321.pojo.entity.NoticesRecord">
+        insert into m_notice_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="uid != null">
+                uid,
+            </if>
+            <if test="p_status != null">
+                p_status,
+            </if>
+            <if test="p_desc != null">
+                p_desc,
+            </if>
+            <if test="steps != null">
+                steps,
+            </if>
+            <if test="coin != null">
+                coin,
+            </if>
+            <if test="create_time != null">
+                create_time,
+            </if>
+            <if test="update_time != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="uid != null">
+                #{uid,jdbcType=INTEGER},
+            </if>
+            <if test="p_status != null">
+                #{p_status,jdbcType=BIT},
+            </if>
+            <if test="p_desc != null">
+                #{p_desc,jdbcType=VARCHAR},
+            </if>
+            <if test="steps != null">
+                #{steps,jdbcType=INTEGER},
+            </if>
+            <if test="coin != null">
+                #{coin,jdbcType=REAL},
+            </if>
+            <if test="create_time != null">
+                #{create_time,jdbcType=TIMESTAMP},
+            </if>
+            <if test="update_time != null">
+                #{update_time,jdbcType=TIMESTAMP}
+            </if>
+        </trim>
+    </insert>
 </mapper>

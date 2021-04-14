@@ -1,6 +1,7 @@
 package com.wl3321.common.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.wl3321.common.mapper.ProductMapper;
 import com.wl3321.common.service.AddressService;
 import com.wl3321.common.service.ProductService;
@@ -66,17 +67,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> selectByCoinASC(PageReq req) {
+    public PageInfo selectByCoinASC(PageReq req) {
         //redis-key
         String key = productKey+":"+req.getPage()+":"+req.getSize();
-        List<Product> list = (List<Product>) redisService.get(key);
-        if (list == null){
+        PageInfo pageInfo = (PageInfo) redisService.get(key);
+        if (null == pageInfo){
             PageHelper.startPage(req.getPage(),req.getSize());
-            list = productMapper.selectByCoinASC();
-            PageHelper.clearPage();
-            redisService.set(key,list);
+            List<Product> list = productMapper.selectByCoinASC();
+            pageInfo = new PageInfo(list);
+            redisService.set(key,pageInfo);
         }
-        return list;
+        return pageInfo;
     }
 
 }

@@ -629,10 +629,15 @@ public class RedisService {
     public Long zRank(String key, Object value) {
         try {
             Long add = redisTemplate.opsForZSet().rank(key, value);
-            return add + 1;
+
+            if (add==null){
+                return 0l;
+            }else {
+                return add + 1;
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            return -1l;
+            return 0l;
         }
     }
 
@@ -646,10 +651,14 @@ public class RedisService {
     public Long zReverseRank(String key, Object value) {
         try {
             Long add = redisTemplate.opsForZSet().reverseRank(key, value);
-            return add + 1;
+            if (add==null){
+                return 0l;
+            }else {
+                return add + 1;
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            return -1l;
+            return 0l;
         }
     }
 
@@ -663,10 +672,14 @@ public class RedisService {
     public Double zScore(String key, Object value) {
         try {
             Double score = redisTemplate.opsForZSet().score(key, value);
-            return score;
+            if (score==null){
+                return 0d;
+            }else {
+                return score;
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            return -1d;
+            return 0d;
         }
     }
 
@@ -684,7 +697,7 @@ public class RedisService {
             return aDouble;
         } catch (Exception e) {
             e.printStackTrace();
-            return -1d;
+            return 0d;
         }
     }
 

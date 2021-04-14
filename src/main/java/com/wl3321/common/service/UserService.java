@@ -1,5 +1,6 @@
 package com.wl3321.common.service;
 
+import com.github.pagehelper.PageInfo;
 import com.wl3321.pojo.entity.User;
 import com.wl3321.pojo.request.PageReq;
 
@@ -20,8 +21,9 @@ public interface UserService {
 
     User selectByOpenid(String openid);
 
-    List<User> selectByDateDesc(PageReq req);
-
+    PageInfo selectByDateDesc(PageReq req);
 
     int update(User user);
+
+    List<User> selectAll();
 }

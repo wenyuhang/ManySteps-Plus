@@ -1,5 +1,6 @@
 package com.wl3321.common.service;
 
+import com.github.pagehelper.PageInfo;
 import com.wl3321.pojo.entity.Order;
 import com.wl3321.pojo.request.PageIDReq;
 import com.wl3321.pojo.request.PageReq;
@@ -27,10 +28,10 @@ public interface OrderService {
 
     Order selectByOrdercode(String ordercode);
 
-    List<OrderResp> selectByUidAndDateDesc(PageIDReq req);
+    PageInfo selectByUidAndDateDesc(PageIDReq req);
 
-    List<OrderResp> selectByPidAndDateDesc(PageIDReq req);
+    PageInfo selectByPidAndDateDesc(PageIDReq req);
 
-    List<OrderResp> selectByDateDesc(PageReq req);
+    PageInfo selectByDateDesc(PageReq req);
 
 }

@@ -1,6 +1,7 @@
 package com.wl3321.common.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.wl3321.common.mapper.UserMapper;
 import com.wl3321.common.service.RedisService;
 import com.wl3321.common.service.UserService;
@@ -76,17 +77,17 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public List<User> selectByDateDesc(PageReq req) {
+    public PageInfo selectByDateDesc(PageReq req) {
         //redis-key
         String key = userKey+":"+req.getPage()+":"+req.getSize();
-        List<User> list = (List<User>) redisService.get(key);
-        if (list == null){
+        PageInfo pageInfo = (PageInfo) redisService.get(key);
+        if (null == pageInfo){
             PageHelper.startPage(req.getPage(),req.getSize());
-            list = userMapper.selectByDateDesc();
-            PageHelper.clearPage();
-            redisService.set(key,list);
+            List<User> list = userMapper.selectByDateDesc();
+            pageInfo = new PageInfo(list);
+            redisService.set(key,pageInfo);
         }
-        return list;
+        return pageInfo;
     }
 
     /**
@@ -102,6 +103,15 @@ public class UserServiceImpl implements UserService {
             clearCach(user.getId(),user.getOpenid());
         }
         return code;
+    }
+
+    /**
+     * 查询全部 危险操作
+     * @return
+     */
+    @Override
+    public List<User> selectAll() {
+        return userMapper.selectAll();
     }
 
     /**

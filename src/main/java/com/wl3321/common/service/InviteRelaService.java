@@ -1,5 +1,6 @@
 package com.wl3321.common.service;
 
+import com.github.pagehelper.PageInfo;
 import com.wl3321.pojo.entity.InviteRela;
 import com.wl3321.pojo.request.PageIDReq;
 import com.wl3321.pojo.response.InviteRelaResp;
@@ -18,5 +19,5 @@ public interface InviteRelaService {
 
     int add(InviteRela inviteRela);
 
-    List<InviteRelaResp> selectByInviteID(PageIDReq req);
+    PageInfo selectByInviteID(PageIDReq req);
 }

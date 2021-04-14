@@ -1,5 +1,6 @@
 package com.wl3321.common.service;
 
+import com.github.pagehelper.PageInfo;
 import com.wl3321.pojo.entity.StepsRecord;
 import com.wl3321.pojo.request.PageIDReq;
 import com.wl3321.pojo.request.PageReq;
@@ -28,7 +29,7 @@ public interface StepsRecordService {
 
     StepsRecord selectByUidAndRundate(int uid,String rundate);
 
-    List<StepsRecord> selectByUidDesc(PageIDReq req);
+    PageInfo selectByUidDesc(PageIDReq req);
 
-    List<StepsMonitorResp> selectStepsMonitor(PageReq req);
+    PageInfo selectStepsMonitor(PageReq req);
 }

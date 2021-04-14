@@ -2,3 +2,7 @@ server:
   port: 8088
 
 
+pro:
+  img:
+    path: /home/manysteps/steps/img/product
+

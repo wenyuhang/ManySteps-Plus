@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wl3321.common.mapper.VersionReviewMapper">
+    <resultMap id="BaseResultMap" type="com.wl3321.pojo.entity.VersionReview">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="version" jdbcType="INTEGER" property="version"/>
+        <result column="desc" jdbcType="VARCHAR" property="desc"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="create_time"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="update_time"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+                id,version,`desc`,create_time,update_time
+    </sql>
+
+    <!--查询版本更新记录-->
+    <select id="selectByTimeDesc" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from m_version_review
+        order by update_time
+        desc
+    </select>
+
+
+
+</mapper>

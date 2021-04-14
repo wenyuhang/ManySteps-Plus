@@ -33,8 +33,7 @@ public class StepsCoinController {
      */
     @PostMapping(value = "/coinRecord")
     public ApiResponse list(@Validated @RequestBody PageIDReq req) {
-        List<StepsCoin> list = stepsCoinService.selectByUidDateDesc(req);
-        PageInfo pageInfo=new PageInfo(list);
+        PageInfo pageInfo = stepsCoinService.selectByUidDateDesc(req);
         return ApiResponse.ofSuccess(pageInfo);
     }
 }

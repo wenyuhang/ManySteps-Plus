@@ -1,5 +1,6 @@
 package com.wl3321.common.service;
 
+import com.github.pagehelper.PageInfo;
 import com.wl3321.pojo.entity.NoticesRecord;
 import com.wl3321.pojo.entity.User;
 import com.wl3321.pojo.request.PageReq;
@@ -27,5 +28,5 @@ public interface NoticesRecordService {
 
     NoticesRecord selectUserNotice(int uid);
 
-    List<NoticesRecord> selectByDateDesc(PageReq req);
+    PageInfo selectByDateDesc(PageReq req);
 }

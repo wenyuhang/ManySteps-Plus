@@ -7,6 +7,7 @@ import com.wl3321.pojo.ApiResponse;
 import com.wl3321.pojo.Test;
 import com.wl3321.pojo.entity.User;
 import com.wl3321.pojo.entity.UserRankInfo;
+import com.wl3321.pojo.entity.VersionReview;
 import com.wl3321.pojo.request.IDReq;
 import com.wl3321.pojo.request.PageIDReq;
 import com.wl3321.pojo.request.PageReq;
@@ -42,6 +43,8 @@ public class UserController {
     NoticesRecordService noticesRecordService;
     @Autowired
     RedisService redisService;
+    @Autowired
+    VersionReviewService versionReviewService;
 
     @PostMapping("/info")
     public ApiResponse userInfo(){
@@ -59,8 +62,7 @@ public class UserController {
      */
     @RequestMapping(value = "/userList",method = RequestMethod.POST)
     public ApiResponse selectByCreateDesc(@Validated @RequestBody PageReq req){
-        List<User> list = userService.selectByDateDesc(req);
-        PageInfo pageInfo = new PageInfo(list);
+        PageInfo pageInfo = userService.selectByDateDesc(req);
         return ApiResponse.ofSuccess(pageInfo);
     }
 
@@ -71,8 +73,7 @@ public class UserController {
      */
     @PostMapping(value = "/getInviteRecord")
     public ApiResponse getInviteRecord(@Validated @RequestBody PageIDReq req){
-        List<InviteRelaResp> list = inviteRelaService.selectByInviteID(req);
-        PageInfo pageInfo=new PageInfo(list);
+        PageInfo pageInfo = inviteRelaService.selectByInviteID(req);
         return ApiResponse.ofSuccess(pageInfo);
     }
 
@@ -186,6 +187,34 @@ public class UserController {
         userRankInfo.setHeadimgurl(user.getHeadimgurl());
         userRankInfo.setOpenid(user.getOpenid());
         return userRankInfo;
+    }
+
+    private boolean flag = true;
+
+    @PostMapping(value = "/wl3321")
+    public ApiResponse updateRankData(){
+        if (flag){
+            List<User> userList = userService.selectAll();
+            System.out.println("size===>"+userList.size());
+            for (User user:userList) {
+                //总步数排行榜
+                redisService.zSet(StepsRecordService.stepsTotalRankKey,getRankValue(user),user.getSteps_total());
+                //更新用户排行榜数据
+                redisService.zSet(InviteRelaService.inviteRankKey,getRankValue(user),user.getInvite_total());
+            }
+            flag = false;
+        }
+        return ApiResponse.ofSuccess("ok");
+    }
+
+    /**
+     * 获取审核配置项
+     * @return
+     */
+    @PostMapping(value = "/getConfig")
+    public ApiResponse getConfig(){
+        VersionReview versionReview = versionReviewService.list();
+        return ApiResponse.ofSuccess(versionReview);
     }
 
 }

@@ -79,6 +79,7 @@ public class WXController {
             //新用户
             //解密用户信息
             JSONObject userInfo = JSONObject.parseObject(WXUtils.getUserInfo(req.getEncryptedData(), session_key, req.getIv()));
+            System.out.println(userInfo.toJSONString());
             if (userInfo == null) {
                 return ApiResponse.of(999, "数据解析错误，请稍后重试", null);
             }
@@ -89,10 +90,10 @@ public class WXController {
             user.setName(StringUtil.isEmpty(nickName) ? "" : nickName);
             String avatarUrl = (String) userInfo.get("avatarUrl");
             user.setHeadimgurl(avatarUrl);
-            String openId = (String) userInfo.get("openId");
-            user.setOpenid(openId);
-            String unionId = (String) userInfo.get("unionId");
-            user.setUnionid(StringUtil.isEmpty(unionId) ? "" : unionId);
+//            String openId = (String) userInfo.get("openId");
+            user.setOpenid(wxCodeSessionBean.getOpenid());
+//            String unionId = (String) userInfo.get("unionId");
+            user.setUnionid(StringUtil.isEmpty(wxCodeSessionBean.getUnionid()) ? "" : wxCodeSessionBean.getUnionid());
             user.setCreatedate(DateUtils.stampToDate(System.currentTimeMillis()));
             user.setSession_key(session_key);
             //插入新用户数据

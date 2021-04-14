@@ -60,11 +60,13 @@ public class NoticesRecordController {
         //用户获取未读公告
         int uid = Integer.parseInt(req.getId());
         NoticesRecord noticesRecord = noticesRecordService.selectUserNotice(uid);
-        //清除未读标记
-        noticesRecord.setP_status(true);
-        noticesRecord.setUpdate_time(new Timestamp(System.currentTimeMillis()));
-        noticesRecordService.updateById(noticesRecord);
-        noticesRecordService.clearUserCach(uid);
+        if (noticesRecord != null){
+            //清除未读标记
+            noticesRecord.setP_status(true);
+            noticesRecord.setUpdate_time(new Timestamp(System.currentTimeMillis()));
+            noticesRecordService.updateById(noticesRecord);
+            noticesRecordService.clearUserCach(uid);
+        }
         return ApiResponse.ofSuccess(noticesRecord);
     }
 
@@ -76,8 +78,7 @@ public class NoticesRecordController {
      */
     @PostMapping(value = "/getNoticesRecord")
     public ApiResponse list(@Validated @RequestBody PageReq req) {
-        List<NoticesRecord> list = noticesRecordService.selectByDateDesc(req);
-        PageInfo pageInfo = new PageInfo(list);
+        PageInfo pageInfo = noticesRecordService.selectByDateDesc(req);
         return ApiResponse.ofSuccess(pageInfo);
     }
 }

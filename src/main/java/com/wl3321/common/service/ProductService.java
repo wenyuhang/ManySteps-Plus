@@ -1,5 +1,6 @@
 package com.wl3321.common.service;
 
+import com.github.pagehelper.PageInfo;
 import com.wl3321.pojo.entity.Product;
 import com.wl3321.pojo.request.PageReq;
 
@@ -27,5 +28,5 @@ public interface ProductService {
 
     Product selectByName(String name);
 
-    List<Product> selectByCoinASC(PageReq req);
+    PageInfo selectByCoinASC(PageReq req);
 }

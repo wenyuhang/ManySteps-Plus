@@ -48,12 +48,12 @@
 
     <!--查询刷步监控-->
     <select id="selectStepsMonitor" resultMap="StepsMonitorMap">
-        select
-        <include refid="Base_Column_List"/>
-        ,COUNT(*) AS COUNT
-        from stepsrecord
-        where steps>1000
-        group by steps,uid HAVING COUNT>1;
+       SELECT
+       steps,uid,count(1) AS `COUNT`
+       FROM `stepsrecord`
+       WHERE steps>10000
+       GROUP BY steps,uid
+       HAVING COUNT(steps)>1
     </select>
 
     <!--插入数据-->

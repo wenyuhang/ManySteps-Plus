@@ -16,7 +16,6 @@ public class RouteController {
 
     @PostMapping("/login")
     public ApiResponse login(@RequestBody AdminLoginReq data){
-        System.out.println(data);
         if ("admin".equals(data.getUsername())&&"jiang08.27.".equals(data.getPassword())){
             return ApiResponse.ofSuccess(null);
         }else {

@@ -1,6 +1,7 @@
 package com.wl3321.common.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.util.StringUtil;
 import com.wl3321.common.mapper.NoticesRecordMapper;
 import com.wl3321.common.service.NoticesRecordService;
@@ -101,8 +102,8 @@ public class NoticesRecordServiceImpl implements NoticesRecordService {
     @Override
     public boolean selectHaveNotice(int uid) {
         String redisKey = noticesRecordKey+uid;
-        String redisValue = (String) redisService.get(redisKey);
-        return !StringUtil.isEmpty(redisValue);
+        NoticesRecord redisValue = (NoticesRecord) redisService.get(redisKey);
+        return redisValue == null;
     }
 
     /**
@@ -123,15 +124,16 @@ public class NoticesRecordServiceImpl implements NoticesRecordService {
      * @return
      */
     @Override
-    public List<NoticesRecord> selectByDateDesc(PageReq req) {
+    public PageInfo selectByDateDesc(PageReq req) {
+        //redis-key
         String redisKey = noticesRecordListKey+req.getPage()+":"+req.getSize();
-        List<NoticesRecord> list = (List<NoticesRecord>) redisService.get(redisKey);
-        if (null == list){
+        PageInfo pageInfo = (PageInfo) redisService.get(redisKey);
+        if (null == pageInfo){
             PageHelper.startPage(req.getPage(),req.getSize());
-            list = noticesRecordMapper.selectByDateDesc();
-            PageHelper.clearPage();
-            redisService.set(redisKey,list);
+            List<NoticesRecord> list = noticesRecordMapper.selectByDateDesc();
+            pageInfo = new PageInfo(list);
+            redisService.set(redisKey,pageInfo);
         }
-        return list;
+        return pageInfo;
     }
 }

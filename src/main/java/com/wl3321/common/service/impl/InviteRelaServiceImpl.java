@@ -1,6 +1,7 @@
 package com.wl3321.common.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.wl3321.common.mapper.InviteRelaMapper;
 import com.wl3321.common.service.InviteRelaService;
 import com.wl3321.common.service.RedisService;
@@ -53,17 +54,17 @@ public class InviteRelaServiceImpl implements InviteRelaService {
      * @return
      */
     @Override
-    public List<InviteRelaResp> selectByInviteID(PageIDReq req) {
+    public PageInfo selectByInviteID(PageIDReq req) {
         //redis-key
         int inviteId = Integer.parseInt(req.getId());
         String key = inviteRelaKey + ":" + inviteId + ":" + req.getPage() + ":" + req.getSize();
-        List<InviteRelaResp> list = (List<InviteRelaResp>) redisService.get(key);
-        if (list == null) {
+        PageInfo pageInfo = (PageInfo) redisService.get(key);
+        if (null == pageInfo) {
             PageHelper.startPage(req.getPage(), req.getSize());
-            list = inviteRelaMapper.selectByInviteID(inviteId);
-            PageHelper.clearPage();
-            redisService.set(key, list);
+            List<InviteRelaResp> list = inviteRelaMapper.selectByInviteID(inviteId);
+            pageInfo=new PageInfo(list);
+            redisService.set(key, pageInfo);
         }
-        return list;
+        return pageInfo;
     }
 }
